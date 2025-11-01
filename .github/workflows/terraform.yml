@@ -1,17 +1,35 @@
-- name: Terraform Init
-  run: terraform init
-  working-directory: ./
+name: Terraform Deploy to Azure
 
-- name: Terraform Plan
-  run: terraform plan -out=tfplan
-  working-directory: ./
+on:
+  push:
+    branches:
+      - main
 
-- name: Terraform Apply
-  if: github.ref == 'refs/heads/main'
-  run: terraform apply -auto-approve tfplan
-  working-directory: ./
-  env:
-    ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-    ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-    ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-    ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+        working-directory: ./
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve tfplan
+        working-directory: ./
+        env:
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
