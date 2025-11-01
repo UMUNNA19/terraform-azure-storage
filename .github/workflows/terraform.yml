@@ -20,12 +20,12 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./
+        working-directory: ./Dummy
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
-        working-directory: ./
+        working-directory: ./Dummy
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-        working-directory: ./
+        working-directory: ./Dummy
